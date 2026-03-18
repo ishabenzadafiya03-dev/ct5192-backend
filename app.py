@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Backend is running"
+    return "Backend is running!"
 
 # Intentionally vulnerable endpoint for ZAP
 @app.route("/search")
