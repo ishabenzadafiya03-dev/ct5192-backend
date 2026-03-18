@@ -5,13 +5,15 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  sonar:
+  test-and-scan:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -24,18 +26,20 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest || true
+          pytest
 
-      - name: SonarCloud Scan
+      - name: Run SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.organization=ishabenzadafiya03-dev
-            -Dsonar.projectKey=ct5192-backend
+            -Dsonar.organization=YOUR_ORG_KEY
+            -Dsonar.projectKey=YOUR_BACKEND_PROJECT_KEY
 
-      - name: Snyk Scan
+      - name: Run Snyk
         uses: snyk/actions/python@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
